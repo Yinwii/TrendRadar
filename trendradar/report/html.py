@@ -170,11 +170,16 @@ def render_html_content(
                 border-radius: 0 6px 6px 0;
                 cursor: pointer;
                 font-size: 11px;
-                transition: all 0.2s ease;
+                transition: transform 0.2s ease, background 0.2s ease;
                 backdrop-filter: blur(10px);
                 min-height: 38px;
                 display: flex;
                 align-items: center;
+            }
+
+            /* 展开时箭头翻转，给出状态反馈 */
+            .save-btn-group.open .save-dropdown-trigger {
+                transform: rotate(180deg);
             }
 
             .save-dropdown-trigger:hover {
@@ -202,11 +207,23 @@ def render_html_content(
                 overflow-y: auto;
             }
 
-            .save-btn-group:hover .save-dropdown-menu,
-            .save-dropdown-menu:hover {
+            /* 点击切换：由 JS 添加 .open */
+            .save-btn-group.open .save-dropdown-menu {
                 opacity: 1;
                 visibility: visible;
                 transform: translateY(0);
+            }
+
+            /* 桌面设备保留 hover 快捷展开（触屏不会误触发）
+               注意：.dd-closed 表示「用户刚手动收起」，此时 hover 不再强行展开，
+               直到鼠标移出按钮组后由 JS 移除该类，恢复 hover 行为。 */
+            @media (hover: hover) and (pointer: fine) {
+                .save-btn-group:hover:not(.dd-closed) .save-dropdown-menu,
+                .save-dropdown-menu:hover {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
             }
 
             .save-dropdown-item {
@@ -2330,6 +2347,64 @@ def render_html_content(
         </div>
 
         <script>
+            // ===== 导出下拉菜单：点击切换 =====
+            (function initSaveDropdown() {
+                function bind() {
+                    var group = document.querySelector('.save-btn-group');
+                    if (!group || group.dataset.ddBound === '1') return;
+                    group.dataset.ddBound = '1';
+                    var trigger = group.querySelector('.save-dropdown-trigger');
+                    if (!trigger) return;
+
+                    // 点击箭头：切换展开/收起
+                    trigger.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (group.classList.contains('open')) {
+                            group.classList.remove('open');
+                            group.classList.add('dd-closed');   // 抑制 hover 再次撑开
+                        } else {
+                            group.classList.add('open');
+                            group.classList.remove('dd-closed');
+                        }
+                    });
+
+                    // 鼠标离开按钮组后，解除 dd-closed，恢复 hover 快捷展开
+                    group.addEventListener('mouseleave', function () {
+                        group.classList.remove('dd-closed');
+                    });
+
+                    // 点击菜单项后自动收起
+                    group.querySelectorAll('.save-dropdown-item').forEach(function (item) {
+                        item.addEventListener('click', function () {
+                            group.classList.remove('open');
+                        });
+                    });
+
+                    // 点击外部关闭
+                    document.addEventListener('click', function (e) {
+                        if (!group.contains(e.target)) {
+                            group.classList.remove('open');
+                            group.classList.add('dd-closed');
+                        }
+                    });
+
+                    // Esc 关闭
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape' || e.keyCode === 27) {
+                            group.classList.remove('open');
+                            group.classList.add('dd-closed');
+                        }
+                    });
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', bind);
+                } else {
+                    bind();
+                }
+            })();
+
             // ===== 浏览器增强功能 =====
 
             function toggleWideMode() {
