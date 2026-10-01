@@ -1,6 +1,6 @@
 services:
   trendradar:
-    image: wantcat/trendradar:latest
+    image: ghcr.io/yinwii/trendradar:latest
     container_name: trendradar
     restart: unless-stopped
 
@@ -41,6 +41,8 @@ services:
       - GENERIC_WEBHOOK_TEMPLATE=${GENERIC_WEBHOOK_TEMPLATE:-}
       # AI 配置（ai_analysis 和 ai_translation 共享模型配置）
       - AI_ANALYSIS_ENABLED=${AI_ANALYSIS_ENABLED:-}
+      - AI_TRANSLATION_ENABLED=${AI_TRANSLATION_ENABLED:-}
+      - AI_FILTER_ENABLED=${AI_FILTER_ENABLED:-}
       - AI_API_KEY=${AI_API_KEY:-}
       - AI_MODEL=${AI_MODEL:-}
       - AI_API_BASE=${AI_API_BASE:-}
@@ -56,7 +58,7 @@ services:
       - IMMEDIATE_RUN=${IMMEDIATE_RUN:-true}
 
   trendradar-mcp:
-    image: wantcat/trendradar-mcp:latest
+    image: ghcr.io/yinwii/trendradar-mcp:latest
     container_name: trendradar-mcp
     restart: unless-stopped
 
