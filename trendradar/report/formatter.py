@@ -138,8 +138,9 @@ def format_title_for_platform(
 
         title_prefix = "🆕 " if title_data.get("is_new") else ""
 
+        # 单行紧凑：来源在左 + 标题 + 排名/时长（全部同行）
         if show_source:
-            result = f"[{title_data['source_name']}] {title_prefix}{formatted_title}"
+            result = f"<b>[{title_data['source_name']}]</b> {title_prefix}{formatted_title}"
         elif show_keyword and keyword:
             result = f"<b>[{html_escape(keyword)}]</b> {title_prefix}{formatted_title}"
         else:
@@ -147,10 +148,11 @@ def format_title_for_platform(
 
         if rank_display:
             result += f" {rank_display}"
-        if title_data["time_display"]:
-            result += f" <code>- {title_data['time_display']}</code>"
         if title_data["count"] > 1:
-            result += f" <code>({title_data['count']}次)</code>"
+            _n = title_data["count"]
+            _m = _n * 30
+            _d = f"{_m/60:.0f}h" if _m >= 60 and abs(_m/60 - round(_m/60)) < 0.05 else (f"{_m/60:.1f}h" if _m >= 60 else f"{_m}m")
+            result += f" <i>⏱{_n}轮/{_d}</i>"
 
         return result
 

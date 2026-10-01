@@ -72,7 +72,7 @@ def render_html_content(
             }
 
             .container {
-                max-width: 600px;
+                max-width: 680px;
                 margin: 0 auto;
                 background: white;
                 border-radius: 12px;
@@ -81,12 +81,22 @@ def render_html_content(
             }
 
             .header {
-                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4c1d95 100%);
                 color: white;
-                padding: 32px 24px;
+                padding: 34px 24px 28px;
                 text-align: center;
                 position: relative;
                 overflow: visible;
+            }
+
+            .header::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(circle at 20% 0%, rgba(129,140,248,0.28), transparent 55%),
+                            radial-gradient(circle at 85% 100%, rgba(168,85,247,0.22), transparent 50%);
+                pointer-events: none;
+                z-index: 1;
             }
 
             .header-watermark {
@@ -223,37 +233,83 @@ def render_html_content(
             }
 
             .header-title {
-                font-size: 22px;
+                font-size: 23px;
                 font-weight: 700;
-                margin: 0 0 20px 0;
+                letter-spacing: 0.02em;
+                margin: 0 0 22px 0;
                 position: relative;
                 z-index: 2;
+                text-shadow: 0 2px 12px rgba(0,0,0,0.28);
             }
 
             .header-info {
                 position: relative;
                 z-index: 2;
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 16px;
-                font-size: 14px;
-                opacity: 0.95;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
 
             .info-item {
+                background: rgba(255, 255, 255, 0.10);
+                border: 1px solid rgba(255, 255, 255, 0.16);
+                border-radius: 12px;
+                padding: 11px 8px 10px;
                 text-align: center;
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+                min-width: 0;
+            }
+
+            /* 图标 + 标签 并排成组，不再让图标单独占一行 */
+            .info-head {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                line-height: 1;
+                white-space: nowrap;
+            }
+
+            .info-item:hover {
+                background: rgba(255, 255, 255, 0.17);
+                border-color: rgba(255, 255, 255, 0.30);
+                transform: translateY(-2px);
+            }
+
+            .info-icon {
+                display: inline-block;
+                font-size: 11px;
+                line-height: 1;
+                opacity: 0.95;
             }
 
             .info-label {
-                display: block;
-                font-size: 12px;
-                opacity: 0.8;
-                margin-bottom: 4px;
+                display: inline-block;
+                font-size: 11px;
+                letter-spacing: 0.02em;
+                color: rgba(255, 255, 255, 0.72);
+                font-weight: 500;
             }
 
             .info-value {
-                font-weight: 600;
-                font-size: 16px;
+                display: block;
+                font-weight: 700;
+                font-size: 16.5px;
+                line-height: 1.15;
+                letter-spacing: -0.01em;
+                white-space: nowrap;
+            }
+
+            .info-value .unit {
+                font-size: 12px;
+                font-weight: 500;
+                opacity: 0.72;
+                margin-left: 1px;
             }
 
             .content {
@@ -304,13 +360,14 @@ def render_html_content(
             }
 
             .news-item {
-                margin-bottom: 20px;
-                padding: 16px 0;
+                margin-bottom: 0;
+                padding: 9px 0;
                 border-bottom: 1px solid #f5f5f5;
                 position: relative;
                 display: flex;
-                gap: 12px;
-                align-items: center;
+                gap: 9px;
+                align-items: flex-start;
+
             }
 
             .news-item:last-child {
@@ -332,24 +389,21 @@ def render_html_content(
             }
 
             .news-number {
-                color: #999;
-                font-size: 13px;
+                color: #9ca3af;
+                font-size: 11px;
                 font-weight: 600;
-                min-width: 20px;
+                min-width: 17px;
                 text-align: center;
                 flex-shrink: 0;
-                background: #f8f9fa;
+                background: #f3f4f6;
                 border-radius: 50%;
-                width: 24px;
-                height: 24px;
+                width: 18px;
+                height: 18px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                align-self: flex-start;
-                margin-top: 8px;
-                position: relative;
-                cursor: pointer;
-                transition: background 0.15s, color 0.15s;
+                margin-top: 3px;
+
             }
             .news-number .num-text { transition: opacity 0.15s; }
             .news-number .copy-icon {
@@ -380,6 +434,8 @@ def render_html_content(
                 flex: 1;
                 min-width: 0;
                 padding-right: 40px;
+                line-height: 1.55;
+
             }
 
             .news-item.new .news-content {
@@ -387,17 +443,21 @@ def render_html_content(
             }
 
             .news-header {
-                display: flex;
+                display: inline-flex;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 8px;
+                gap: 5px;
+                margin: 0 6px 0 0;
                 flex-wrap: wrap;
+                vertical-align: baseline;
+
             }
 
             .source-name {
-                color: #666;
-                font-size: 12px;
-                font-weight: 500;
+                color: #6b7280;
+                font-size: 11px;
+                font-weight: 600;
+                white-space: nowrap;
+
             }
 
             .keyword-tag {
@@ -412,12 +472,13 @@ def render_html_content(
             .rank-num {
                 color: #fff;
                 background: #6b7280;
-                font-size: 10px;
+                font-size: 9px;
                 font-weight: 700;
-                padding: 2px 6px;
-                border-radius: 10px;
-                min-width: 18px;
+                padding: 1px 5px;
+                border-radius: 8px;
+                min-width: 16px;
                 text-align: center;
+
             }
 
             .rank-num.top { background: #dc2626; }
@@ -430,22 +491,41 @@ def render_html_content(
             }
 
             .time-info {
-                color: #999;
-                font-size: 11px;
+                color: #9ca3af;
+                font-size: 10px;
+                white-space: nowrap;
+
             }
 
             .count-info {
                 color: #059669;
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: 500;
+                background: #ecfdf5;
+                padding: 1px 6px;
+                border-radius: 8px;
+                white-space: nowrap;
+
             }
 
             .news-title {
-                font-size: 15px;
-                line-height: 1.4;
+                font-size: 14.5px;
+                line-height: 1.55;
                 color: #1a1a1a;
                 margin: 0;
+                display: inline;
+
             }
+
+            .news-tail {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                margin: 0 0 0 6px;
+                vertical-align: baseline;
+                white-space: nowrap;
+            }
+
 
             .news-link {
                 color: #2563eb;
@@ -616,7 +696,9 @@ def render_html_content(
                 .header { padding: 24px 20px; }
                 .content { padding: 20px; }
                 .footer { padding: 16px 20px; }
-                .header-info { grid-template-columns: 1fr; gap: 12px; }
+                .header-info { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+                .info-item { padding: 10px 8px; }
+                .info-value { font-size: 15px; }
                 .news-header { gap: 6px; }
                 .news-content { padding-right: 45px; }
                 .news-item { gap: 8px; }
@@ -693,8 +775,8 @@ def render_html_content(
             }
 
             .rss-item {
-                margin-bottom: 12px;
-                padding: 14px;
+                margin-bottom: 6px;
+                padding: 8px 12px;
                 background: #f0fdf4;
                 border-radius: 8px;
                 border-left: 3px solid #10b981;
@@ -713,20 +795,23 @@ def render_html_content(
             }
 
             .rss-time {
-                color: #6b7280;
-                font-size: 12px;
+                color: #9ca3af;
+                font-size: 10px;
+                white-space: nowrap;
             }
 
             .rss-author {
                 color: #059669;
-                font-size: 12px;
+                font-size: 10px;
                 font-weight: 500;
+                white-space: nowrap;
             }
 
             .rss-title {
-                font-size: 14px;
+                font-size: 13.5px;
                 line-height: 1.5;
-                margin-bottom: 6px;
+                margin: 0;
+                display: inline;
             }
 
             .rss-link {
@@ -892,7 +977,7 @@ def render_html_content(
 
             /* 宽屏模式 - 基础 */
             body.wide-mode .container { max-width: 1200px; }
-            body.wide-mode .header-info { grid-template-columns: repeat(4, 1fr); }
+            body.wide-mode .header-info { grid-template-columns: repeat(4, 1fr); gap: 12px; }
             body.wide-mode .content { padding: 32px 40px; }
 
             /* 宽屏模式 - RSS feed-group 两列 */
@@ -1220,7 +1305,9 @@ def render_html_content(
                 background: rgba(99,102,241,0.15);
                 color: #a5b4fc;
             }
-            body.dark-mode .count-info { color: #6ee7b7; }
+            body.dark-mode .count-info { color: #6ee7b7; background: rgba(16, 185, 129, 0.15); }
+            body.dark-mode .news-tail .time-info { color: #94a3b8; }
+            body.dark-mode .news-tail .rss-time { color: #94a3b8; }
             body.dark-mode .rss-source,
             body.dark-mode .feed-name,
             body.dark-mode .rss-section-title,
@@ -1464,21 +1551,21 @@ def render_html_content(
     # 1. 报告类型
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">报告类型</span>
+                        <span class="info-head"><span class="info-icon">🗂️</span><span class="info-label">报告类型</span></span>
                         <span class="info-value">{mode_display}</span>
                     </div>"""
 
     # 2. 生成时间
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">生成时间</span>
+                        <span class="info-head"><span class="info-icon">🕐</span><span class="info-label">生成时间</span></span>
                         <span class="info-value">{now.strftime("%m-%d %H:%M")}</span>
                     </div>"""
 
     # 3. 热榜命中
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">热榜命中</span>
+                        <span class="info-head"><span class="info-icon">🔥</span><span class="info-label">热榜命中</span></span>
                         <span class="info-value">{hot_news_count} / {hotlist_total}</span>
                     </div>"""
 
@@ -1489,7 +1576,7 @@ def render_html_content(
         rss_value = "未启用"
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">RSS 命中</span>
+                        <span class="info-head"><span class="info-icon">📡</span><span class="info-label">RSS 命中</span></span>
                         <span class="info-value">{rss_value}</span>
                     </div>"""
 
@@ -1500,7 +1587,7 @@ def render_html_content(
         platform_value = "--"
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">热榜平台</span>
+                        <span class="info-head"><span class="info-icon">🌐</span><span class="info-label">热榜平台</span></span>
                         <span class="info-value">{platform_value}</span>
                     </div>"""
 
@@ -1511,7 +1598,7 @@ def render_html_content(
         rss_source_value = "--"
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">RSS 源</span>
+                        <span class="info-head"><span class="info-icon">📰</span><span class="info-label">RSS 源</span></span>
                         <span class="info-value">{rss_source_value}</span>
                     </div>"""
 
@@ -1521,7 +1608,7 @@ def render_html_content(
     new_value = f"{new_count} + {rss_new_count}" if total_new > 0 else "0"
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">新增热点</span>
+                        <span class="info-head"><span class="info-icon">✨</span><span class="info-label">新增热点</span></span>
                         <span class="info-value">{new_value}</span>
                     </div>"""
 
@@ -1548,7 +1635,7 @@ def render_html_content(
         ai_value = "未启用"
     html += f"""
                     <div class="info-item">
-                        <span class="info-label">AI 分析</span>
+                        <span class="info-head"><span class="info-icon">🤖</span><span class="info-label">AI 分析</span></span>
                         <span class="info-value">{ai_value}</span>
                     </div>"""
 
@@ -1664,7 +1751,9 @@ def render_html_content(
 
                     stats_html += f'<span class="rank-num {rank_class}">{rank_text}</span>{trend_html}'
 
-                # 处理时间显示
+                # 时间/在榜数据先算好，稍后拼到标题后面
+                _tail_hot = ""
+
                 time_display = title_data.get("time_display", "")
                 if time_display:
                     # 简化时间显示格式，将波浪线替换为~
@@ -1673,14 +1762,17 @@ def render_html_content(
                         .replace("[", "")
                         .replace("]", "")
                     )
-                    stats_html += (
-                        f'<span class="time-info">{html_escape(simplified_time)}</span>'
-                    )
+                    _tail_hot += f'<span class="time-info">🕐 {html_escape(simplified_time)}</span>'
 
-                # 处理出现次数
                 count_info = title_data.get("count", 1)
                 if count_info > 1:
-                    stats_html += f'<span class="count-info">{count_info}次</span>'
+                    _mins = count_info * 30
+                    if _mins >= 60:
+                        _hrs = _mins / 60
+                        _dur = f"{_hrs:.0f}h" if abs(_hrs - round(_hrs)) < 0.05 else f"{_hrs:.1f}h"
+                    else:
+                        _dur = f"{_mins}m"
+                    _tail_hot += f'<span class="count-info" title="今天已连续追踪 {count_info} 轮，每轮间隔 30 分钟">🔥 在榜 {count_info} 轮 · 约 {_dur}</span>'
 
                 stats_html += """
                             </div>
@@ -1695,6 +1787,9 @@ def render_html_content(
                     stats_html += f'<a href="{escaped_url}" target="_blank" class="news-link">{escaped_title}</a>'
                 else:
                     stats_html += escaped_title
+
+                if _tail_hot:
+                    stats_html += f'<span class="news-tail">{_tail_hot}</span>'
 
                 stats_html += """
                             </div>
@@ -1842,19 +1937,6 @@ def render_html_content(
 
                 rss_html += """
                         <div class="rss-item">
-                            <div class="rss-meta">"""
-
-                if time_display:
-                    rss_html += f'<span class="rss-time">{html_escape(time_display)}</span>'
-
-                if source_name:
-                    rss_html += f'<span class="rss-author">{html_escape(source_name)}</span>'
-
-                if is_new:
-                    rss_html += '<span class="rss-author" style="color: #dc2626;">NEW</span>'
-
-                rss_html += """
-                            </div>
                             <div class="rss-title">"""
 
                 escaped_title = html_escape(item_title)
@@ -1863,6 +1945,17 @@ def render_html_content(
                     rss_html += f'<a href="{escaped_url}" target="_blank" class="rss-link">{escaped_title}</a>'
                 else:
                     rss_html += escaped_title
+
+                _rss_tail = ""
+                if time_display:
+                    _rss_tail += f'<span class="rss-time">🕐 {html_escape(time_display)}</span>'
+                if source_name:
+                    _rss_tail += f'<span class="rss-author">{html_escape(source_name)}</span>'
+                if is_new:
+                    _rss_tail += '<span class="rss-author" style="color: #dc2626;">NEW</span>'
+
+                if _rss_tail:
+                    rss_html += f'<span class="news-tail">{_rss_tail}</span>'
 
                 rss_html += """
                             </div>
@@ -2028,18 +2121,25 @@ def render_html_content(
                         rank_class = ""
                     standalone_html += f'<span class="rank-num {rank_class}">{rank}</span>'
 
-                # 时间显示（复用 time-info 样式，将 HH-MM 转换为 HH:MM）
+                # 时间/在榜数据先算好，稍后拼到标题后面
+                _tail_sa = ""
+
                 if first_time and last_time and first_time != last_time:
                     first_time_display = convert_time_for_display(first_time)
                     last_time_display = convert_time_for_display(last_time)
-                    standalone_html += f'<span class="time-info">{html_escape(first_time_display)}~{html_escape(last_time_display)}</span>'
+                    _tail_sa += f'<span class="time-info">🕐 {html_escape(first_time_display)}~{html_escape(last_time_display)}</span>'
                 elif first_time:
                     first_time_display = convert_time_for_display(first_time)
-                    standalone_html += f'<span class="time-info">{html_escape(first_time_display)}</span>'
+                    _tail_sa += f'<span class="time-info">🕐 {html_escape(first_time_display)}</span>'
 
-                # 出现次数（复用 count-info 样式）
                 if count > 1:
-                    standalone_html += f'<span class="count-info">{count}次</span>'
+                    _mins2 = count * 30
+                    if _mins2 >= 60:
+                        _h2 = _mins2 / 60
+                        _dur2 = f"{_h2:.0f}h" if abs(_h2 - round(_h2)) < 0.05 else f"{_h2:.1f}h"
+                    else:
+                        _dur2 = f"{_mins2}m"
+                    _tail_sa += f'<span class="count-info">🔥 在榜 {count} 轮 · 约 {_dur2}</span>'
 
                 standalone_html += """
                                 </div>
@@ -2052,6 +2152,9 @@ def render_html_content(
                     standalone_html += f'<a href="{escaped_url}" target="_blank" class="news-link">{escaped_title}</a>'
                 else:
                     standalone_html += escaped_title
+
+                if _tail_sa:
+                    standalone_html += f'<span class="news-tail">{_tail_sa}</span>'
 
                 standalone_html += """
                                 </div>
@@ -2088,21 +2191,7 @@ def render_html_content(
                             <div class="news-content">
                                 <div class="news-header">"""
 
-                # 时间显示（格式化 ISO 时间）
-                if published_at:
-                    try:
-                        from datetime import datetime as dt
-                        if "T" in published_at:
-                            dt_obj = dt.fromisoformat(published_at.replace("Z", "+00:00"))
-                            time_display = dt_obj.strftime("%m-%d %H:%M")
-                        else:
-                            time_display = published_at
-                    except:
-                        time_display = published_at
-
-                    standalone_html += f'<span class="time-info">{html_escape(time_display)}</span>'
-
-                # 作者显示
+                # 作者显示（保留在 header）
                 if author:
                     standalone_html += f'<span class="source-name">{html_escape(author)}</span>'
 
@@ -2116,6 +2205,19 @@ def render_html_content(
                     standalone_html += f'<a href="{escaped_url}" target="_blank" class="news-link">{escaped_title}</a>'
                 else:
                     standalone_html += escaped_title
+
+                # 时间显示（格式化 ISO 时间）→ 放到标题后
+                if published_at:
+                    try:
+                        from datetime import datetime as dt
+                        if "T" in published_at:
+                            dt_obj = dt.fromisoformat(published_at.replace("Z", "+00:00"))
+                            time_display = dt_obj.strftime("%m-%d %H:%M")
+                        else:
+                            time_display = published_at
+                    except:
+                        time_display = published_at
+                    standalone_html += f'<span class="news-tail"><span class="time-info">🕐 {html_escape(time_display)}</span></span>'
 
                 standalone_html += """
                                 </div>

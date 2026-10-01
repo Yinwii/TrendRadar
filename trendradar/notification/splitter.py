@@ -216,7 +216,7 @@ def split_content_into_batches(
     if format_type == "slack":
         b_s, b_e = "*", "*"
     elif format_type == "telegram":
-        b_s, b_e = "", ""
+        b_s, b_e = "<b>", "</b>"
     else:
         b_s, b_e = "**", "**"
 
@@ -237,21 +237,39 @@ def split_content_into_batches(
     # 1. 总新闻
     rss_new_count = sum(len(stat.get("titles", [])) for stat in (rss_new_items or []))
     total_new = new_count + rss_new_count
-    total_news_line = f"{b_s}总新闻：{b_e} {total_titles} 条"
+    total_news_line = f"{b_s}总新闻：{b_e} {b_s}{total_titles}{b_e} 条"
     if total_new > 0:
         total_news_line += f"（新增 {new_count} + {rss_new_count}）"
-    base_header += f"{total_news_line}\n"
 
-    # 2. 热榜
-    hotlist_info = f"{b_s}热榜：{b_e} {total_hotlist_count}/{hotlist_total}"
-    if platform_total > 0:
-        hotlist_info += f"（平台 {platform_success}/{platform_total}）"
-    base_header += f"{hotlist_info}\n"
+    if format_type == "telegram":
+        # ── TG 专属：顶部标题 + 分隔线 + 图标化统计 ──
+        base_header += f"📰 {b_s}今日热点速览{b_e}\n"
+        base_header += "━━━━━━━━━━━━━━\n"
+        _parts = [f"🗞 {b_s}{total_titles}{b_e} 条"]
+        if hotlist_total:
+            _parts.append(f"🔥 {b_s}{total_hotlist_count}/{hotlist_total}{b_e}")
+        if rss_source_total > 0:
+            _parts.append(f"📡 {b_s}{rss_matched}/{rss_total_items}{b_e}")
+        base_header += " · ".join(_parts) + "\n"
+        if total_new > 0:
+            base_header += f"✨ <i>新增 {new_count} + {rss_new_count}</i>\n"
+        _meta = [report_type]
+        if platform_total > 0:
+            _meta.append(f"{platform_success}/{platform_total} 平台正常")
+        base_header += f"<i>{' · '.join(_meta)}</i>\n"
+    else:
+        base_header += f"{total_news_line}\n"
 
-    # 3. RSS
-    if rss_source_total > 0:
-        rss_info = f"{b_s}RSS：{b_e} {rss_matched}/{rss_total_items}（源 {rss_source_success}/{rss_source_total}）"
-        base_header += f"{rss_info}\n"
+        # 2. 热榜
+        hotlist_info = f"{b_s}热榜：{b_e} {b_s}{total_hotlist_count}/{hotlist_total}{b_e}"
+        if platform_total > 0:
+            hotlist_info += f"（平台 {platform_success}/{platform_total}）"
+        base_header += f"{hotlist_info}\n"
+
+        # 3. RSS
+        if rss_source_total > 0:
+            rss_info = f"{b_s}RSS：{b_e} {b_s}{rss_matched}/{rss_total_items}{b_e}（源 {rss_source_success}/{rss_source_total}）"
+            base_header += f"{rss_info}\n"
 
     # 4. 独立展示区（仅在有数据时显示）
     if standalone_data:
@@ -292,13 +310,19 @@ def split_content_into_batches(
     base_header += "\n"
 
     # === 下半部分：元信息 ===
-    base_header += f"{b_s}类型：{b_e} {report_type}\n"
-    base_header += f"{b_s}时间：{b_e} {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
-
     top_words = report_data.get("stats", [])[:3]
-    if top_words:
-        topics = " | ".join(f"{s['word']}({s['count']})" for s in top_words)
-        base_header += f"{b_s}最热话题：{b_e} {topics}\n"
+    if format_type == "telegram":
+        # TG 专属：时间下沉到 footer，此处只留话题摘要 + 收束线
+        if top_words:
+            topics = " · ".join(f"{s['word']} {b_s}{s['count']}{b_e}" for s in top_words)
+            base_header += f"🔎 {b_s}热门话题{b_e}  {topics}\n"
+        base_header += "━━━━━━━━━━━━━━\n"
+    else:
+        base_header += f"{b_s}类型：{b_e} {report_type}\n"
+        base_header += f"{b_s}时间：{b_e} {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
+        if top_words:
+            topics = " | ".join(f"{s['word']}({s['count']})" for s in top_words)
+            base_header += f"{b_s}最热话题：{b_e} {topics}\n"
 
     if format_type in ("feishu", "dingtalk"):
         base_header += "\n---\n\n"
@@ -338,7 +362,7 @@ def split_content_into_batches(
         if format_type in ("wework", "bark"):
             stats_header = f"📊 **{stats_title}** (共 {total_hotlist_count} 条)\n\n"
         elif format_type == "telegram":
-            stats_header = f"📊 {stats_title} (共 {total_hotlist_count} 条)\n\n"
+            stats_header = f"📊 {b_s}{stats_title}{b_e} (共 {total_hotlist_count} 条)\n\n"
         elif format_type == "ntfy":
             stats_header = f"📊 **{stats_title}** (共 {total_hotlist_count} 条)\n\n"
         elif format_type == "feishu":
@@ -433,11 +457,11 @@ def split_content_into_batches(
                     word_header = f"📌 {sequence_display} **{word}** : {count} 条\n\n"
             elif format_type == "telegram":
                 if count >= 10:
-                    word_header = f"🔥 {sequence_display} {word} : {count} 条\n\n"
+                    word_header = f"🔥 {b_s}{word}{b_e} · {b_s}{count}{b_e} 条\n"
                 elif count >= 5:
-                    word_header = f"📈 {sequence_display} {word} : {count} 条\n\n"
+                    word_header = f"📈 {b_s}{word}{b_e} · {b_s}{count}{b_e} 条\n"
                 else:
-                    word_header = f"📌 {sequence_display} {word} : {count} 条\n\n"
+                    word_header = f"📌 {b_s}{word}{b_e} · {b_s}{count}{b_e} 条\n"
             elif format_type == "ntfy":
                 if count >= 10:
                     word_header = (
@@ -514,7 +538,7 @@ def split_content_into_batches(
                     formatted_title = f"{first_title_data['title']}"
 
                 first_news_line = f"  1. {formatted_title}\n"
-                if len(stat["titles"]) > 1:
+                if len(stat["titles"]) > 1 and format_type != "telegram":
                     first_news_line += "\n"
 
             # 原子性检查：词组标题+第一条新闻必须一起处理
@@ -569,7 +593,7 @@ def split_content_into_batches(
                     formatted_title = f"{title_data['title']}"
 
                 news_line = f"  {j + 1}. {formatted_title}\n"
-                if j < len(stat["titles"]) - 1:
+                if j < len(stat["titles"]) - 1 and format_type != "telegram":
                     news_line += "\n"
 
                 test_content = current_batch + news_line
@@ -594,7 +618,7 @@ def split_content_into_batches(
                 if format_type in ("wework", "bark"):
                     separator = f"\n\n\n\n"
                 elif format_type == "telegram":
-                    separator = f"\n\n"
+                    separator = f"\n"
                 elif format_type == "ntfy":
                     separator = f"\n\n"
                 elif format_type == "feishu":

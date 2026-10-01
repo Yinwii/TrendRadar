@@ -148,6 +148,20 @@ def format_rank_display(
         highlight_start = "**"
         highlight_end = "**"
 
+    # TG：图表化排名（图标 + 加粗数字，视觉统一）
+    if format_type == "telegram":
+        if min_rank <= 3:
+            _icon = "🏆"
+        elif min_rank <= rank_threshold:
+            _icon = "🎯"
+        else:
+            _icon = "📍"
+        _num = f"{min_rank}" if min_rank == max_rank else f"{min_rank}-{max_rank}"
+        rank_str = f"{_icon}<b>{_num}</b>"
+        trend = calculate_rank_trend(rank_timeline, ranks)
+        trend_arrow = {"up": "📈", "down": "📉"}.get(trend, "")
+        return f"{rank_str} {trend_arrow}" if trend_arrow else rank_str
+
     # 生成排名显示
     rank_str = ""
     if min_rank <= rank_threshold:
