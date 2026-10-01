@@ -76,7 +76,9 @@ def render_html_content(
                 margin: 0 auto;
                 background: white;
                 border-radius: 12px;
-                overflow: hidden;
+                /* 仅横向裁剪（保留圆角效果），纵向放行以免下拉菜单被切 */
+                overflow-x: hidden;
+                overflow-y: visible;
                 box-shadow: 0 2px 16px rgba(0,0,0,0.06);
             }
 
@@ -123,7 +125,7 @@ def render_html_content(
                 right: 16px;
                 display: flex;
                 gap: 8px;
-                z-index: 10;
+                z-index: 200;
             }
 
             .save-btn-group {
@@ -195,6 +197,9 @@ def render_html_content(
                 transform: translateY(-4px);
                 transition: all 0.2s ease;
                 box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                z-index: 210;
+                max-height: 70vh;
+                overflow-y: auto;
             }
 
             .save-btn-group:hover .save-dropdown-menu,
@@ -711,7 +716,9 @@ def render_html_content(
                     gap: 8px;
                     justify-content: center;
                     width: 100%;
+                    z-index: auto;
                 }
+                .save-dropdown-menu { z-index: 210; }
                 .save-btn-group {
                     flex: 1;
                 }
