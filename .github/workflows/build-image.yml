@@ -65,7 +65,7 @@ jobs:
         with:
           images: ghcr.io/yinwii/trendradar-fork
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest
             type=ref,event=branch
             type=ref,event=tag
             type=sha,format=short
@@ -118,7 +118,7 @@ jobs:
         with:
           images: ghcr.io/yinwii/trendradar-mcp-fork
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest
             type=ref,event=branch
             type=ref,event=tag
             type=sha,format=short
