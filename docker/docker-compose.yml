@@ -1,6 +1,6 @@
 services:
   trendradar:
-    image: ghcr.io/yinwii/trendradar:latest
+    image: ghcr.io/yinwii/trendradar-fork:latest
     container_name: trendradar
     restart: unless-stopped
 
@@ -58,7 +58,7 @@ services:
       - IMMEDIATE_RUN=${IMMEDIATE_RUN:-true}
 
   trendradar-mcp:
-    image: ghcr.io/yinwii/trendradar-mcp:latest
+    image: ghcr.io/yinwii/trendradar-mcp-fork:latest
     container_name: trendradar-mcp
     restart: unless-stopped
 
