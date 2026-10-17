@@ -10,6 +10,7 @@ on:
   push:
     branches:
       - master
+      - main
     tags:
       - "v*"
       - "mcp-v*"
